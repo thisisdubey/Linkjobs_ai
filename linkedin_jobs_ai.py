@@ -233,6 +233,18 @@ st.title("Job Application Assistant")
 #github_url = st.text_input("GitHub URL (Optional):", value=st.session_state.github_url)
 #personal_writeup = st.text_area("Personal Write-up or Cover Letter:", height=200, value=st.session_state.personal_writeup)
 
+# Initialize session state FIRST
+# Initialize job_application_inputs in session state FIRST
+for key in [
+    "job_posting_url", "github_url", "personal_writeup", "tailored_resume",
+    "interview_materials", "temp_markdown_filename", "temp_resume_filename",
+    "temp_interview_filename", "job_application_inputs", "markdown_output", "docx_file"
+]:
+    if key not in st.session_state:  # Crucial check to prevent re-initialization
+        st.session_state[key] = "" if key not in ["temp_markdown_filename", "temp_resume_filename", "temp_interview_filename", "job_application_inputs", "docx_file"] else None
+
+
+
 job_posting_url = st.text_input("Job Posting URL:", key="job_posting_url")
 github_url = st.text_input("GitHub URL (Optional):", key="github_url")
 personal_writeup = st.text_area("Personal Write-up or Cover Letter:", height=200, key="personal_writeup")
@@ -357,6 +369,7 @@ if st.button("Clear"):
         "interview_materials", "temp_markdown_filename", "temp_resume_filename", "temp_interview_filename",
         "job_application_inputs", "markdown_output", "docx_file"  # Clear all relevant keys
     ]:
+
         st.session_state[key] = "" if key not in ["temp_markdown_filename", "temp_resume_filename", "temp_interview_filename",
                                                   "job_application_inputs", "docx_file"] else None
 
