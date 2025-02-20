@@ -12,8 +12,7 @@ from crewai_tools import (
     FileReadTool,
     ScrapeWebsiteTool,
     MDXSearchTool,
-    SerperDevTool,
-    SpiderTool
+    SerperDevTool
 )
 import mammoth
 import markdownify
@@ -53,7 +52,6 @@ def convert_docx_to_markdown(docx_file):
 #  CrewAI Agents and Tasks
 search_tool = SerperDevTool()
 scrape_tool = ScrapeWebsiteTool()
-spider_tool = SpiderTool()
 
 # Initialize tools AFTER temp file names are in session state (inside the process button logic)
 read_resume = None
@@ -231,9 +229,14 @@ job_application_crew = Crew(
 st.title("Job Application Assistant")
 
 # Input fields (bind to session state)
-job_posting_url = st.text_input("Job Posting URL:", value=st.session_state.job_posting_url)
-github_url = st.text_input("GitHub URL:", value=st.session_state.github_url)
-personal_writeup = st.text_area("Personal Write-up:", height=200, value=st.session_state.personal_writeup)
+#job_posting_url = st.text_input("Job Posting URL:", value=st.session_state.job_posting_url)
+#github_url = st.text_input("GitHub URL (Optional):", value=st.session_state.github_url)
+#personal_writeup = st.text_area("Personal Write-up or Cover Letter:", height=200, value=st.session_state.personal_writeup)
+
+job_posting_url = st.text_input("Job Posting URL:", key="job_posting_url")
+github_url = st.text_input("GitHub URL (Optional):", key="github_url")
+personal_writeup = st.text_area("Personal Write-up or Cover Letter:", height=200, key="personal_writeup")
+
 
 # DOCX to Markdown Conversion
 uploaded_file = st.file_uploader("Upload DOCX Resume (Optional)", type="docx")
@@ -261,7 +264,7 @@ if uploaded_file:
 
 # Process button
 if st.button("Generate Job Application Materials"):
-    if job_posting_url and github_url and personal_writeup:
+    if job_posting_url and personal_writeup:
         st.session_state.job_application_inputs = {
             'job_posting_url': job_posting_url,
             'github_url': github_url,
@@ -314,7 +317,7 @@ if st.button("Generate Job Application Materials"):
                     if st.session_state.tailored_resume:
                         st.markdown(
                             f"""
-                            <div style="word-wrap: break-word; overflow-y: auto; max-height: 400px;">  
+                            <div style="word-wrap: break-word; overflow-y: auto; max-height: 600px;">  
                                 {st.session_state.tailored_resume}
                             </div>
                             """,
@@ -327,7 +330,7 @@ if st.button("Generate Job Application Materials"):
                     if st.session_state.interview_materials:  # Check if content exists
                         st.markdown(
                             f"""
-                            <div style="word-wrap: break-word; overflow-y: auto; max-height: 400px;">  
+                            <div style="word-wrap: break-word; overflow-y: auto; max-height: 600px;">  
                                 {st.session_state.interview_materials}
                             </div>
                             """,
@@ -343,7 +346,7 @@ if st.button("Generate Job Application Materials"):
                 st.error(f"An error occurred: {e}")
 
     else:
-        st.warning("Please fill in all input fields.")
+        st.warning("Please fill in all mandatory input fields.")
 
 
 
